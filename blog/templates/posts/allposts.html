@@ -1,13 +1,36 @@
 {% extends "base.html" %}
+{%load static%}
+{%load thumbnail%}
+{% block styles %}
+{% endblock styles %}
 {% block content %}
 {% if posts_list %}
-<ul>
-{%for i in posts_list%}
-<li>{{i.title}}
-    <img src={{i.thumbnail.url}}></img>
-</li>
-{% endfor %} 
-</ul>
+<div class="album py-5 bg-body-tertiary">
+<div class="container">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-3">
+        {%for i in posts_list%}
+        <div class="col">
+            <div class="card shadow-sm">
+                 {% thumbnail i.thumbnail "300x200" crop="center" as im %}
+                <img src="{{ im.url }}" alt="{{ i.title }}" class="card-img-top" style="width: 100%; height: auto;">
+                {% endthumbnail %}
+                
+              <div class="card-body">
+                <h3>{{i.title}}</h3>
+                <p class="card-text">{{i.get_short_info}}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <form action="">
+                    <button type="submit" class="btn btn-outline-dark me-2">Просмотреть</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+        </div>
+        {% endfor %} 
+    </div>
+</div>
+</div>
+
 {%else%}
 <p>No posts available</p>
 {% endif %}
