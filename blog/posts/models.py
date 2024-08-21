@@ -13,3 +13,19 @@ class Post(models.Model):
 
         a = text.split()[:20]
         return " ".join(a)
+    def get_verbose_month(self):
+        dict = {
+            1 :'января',
+            2 : 'февраля',
+            3 : 'марта',
+            4 : 'апреля',
+            5 : 'мая',
+            6 : 'июня',
+            7 : 'июля',
+            8 : 'августа',
+            9 : 'сентября',
+            10 : 'октября',
+            11: 'ноября',
+            12: 'декабря',
+        }
+        return dict[self.pub_date.month]

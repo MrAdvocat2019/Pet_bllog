@@ -19,7 +19,7 @@
                 <h3>{{i.title}}</h3>
                 <p class="card-text">{{i.get_short_info}}</p>
                 <div class="d-flex justify-content-between align-items-center">
-                  <form action="">
+                  <form action="{%url 'detail' i.id%}">
                     <button type="submit" class="btn btn-outline-dark me-2">Просмотреть</button>
                   </form>
                 </div>

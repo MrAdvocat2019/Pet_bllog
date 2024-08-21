@@ -15,3 +15,6 @@ class AllPostsView(generic.ListView):
     context_object_name = 'posts_list'
     def get_queryset(self) -> QuerySet[Any]:
         return Post.objects.all()
+class PostDetailView(generic.DetailView):
+    model = Post
+    template_name = 'posts/post_detail.html'
