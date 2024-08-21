@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+{% if posts_list %}
+<ul>
+{%for i in posts_list%}
+<li>{{i.title}}
+    <img src={{i.thumbnail.url}}></img>
+</li>
+{% endfor %} 
+</ul>
+{%else%}
+<p>No posts available</p>
+{% endif %}
+{% endblock%}
