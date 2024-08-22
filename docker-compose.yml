@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+  pgdb:
+
+    image: postgres
+    environment:
+      - POSTGRES_DB=blog
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123456
+     # Задание имени контейнера для сервиса pgdb
+    container_name: pgdb
+     # Связывание тома с директорией в контейнере для сохранения данных postgres
+    volumes:
+      - pgdbdata:/var/lib/postgresql/data/
+  django:
+    # Сборка образа для сервиса django из текущей директории
+    build: ./blog
+    # Задание имени контейнера для сервиса django
+    container_name: django
+    # Задание команды, которую нужно запустить при запуске контейнера для сервиса django
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./blog:/usr/src/app
+    # Открытие порта на хостовой машине и перенаправление на порт в контейнере
+    ports:
+      - 8000:8000
+    # Зависимость от другого сервиса
+    depends_on:
+      - pgdb
+      - redis
+
+
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+
+  celery:
+    build: ./blog
+    command: celery -A blog worker -l info
+    volumes:
+      - ./blog:/usr/src/app/
+    container_name: celery
+    depends_on:
+      - redis
+volumes:
+  pgdbdata: null

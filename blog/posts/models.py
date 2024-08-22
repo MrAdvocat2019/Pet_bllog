@@ -42,6 +42,8 @@ class Post(models.Model):
         if is_created:
             from .tasks import send_notification_1  # Import here to avoid circular import
             send_notification_1.delay()
+    def __str__(self):
+        return self.title
 
 
 
