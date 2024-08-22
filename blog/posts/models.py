@@ -28,4 +28,12 @@ class Post(models.Model):
             11: 'ноября',
             12: 'декабря',
         }
-        return dict[self.pub_date.month]
+        try:
+            return dict[self.pub_date.month]
+        except:
+            return "Wrong month"
+
+
+
+
+        
