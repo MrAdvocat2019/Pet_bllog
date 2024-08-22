@@ -10,6 +10,7 @@ from .models import Post
 
 class AllPostsView(generic.ListView):
     template_name = "posts/allposts.html"
+    paginate_by = 9
     context_object_name = 'posts_list'
     def get_queryset(self) -> QuerySet[Any]:
         return Post.objects.filter(pub_date__lte=timezone.now()).order_by("-pub_date")
