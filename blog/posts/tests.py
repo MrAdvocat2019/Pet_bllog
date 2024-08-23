@@ -87,6 +87,53 @@ class PostListViewTest(TestCase):
 
         # Assert that no posts are returned
         self.assertQuerySetEqual(response.context['posts_list'], [])
+    def test_too_early_post(self):
+        post = Post.objects.create(title = 'Tst', blog_text = "123", pub_date = '2024-8-2')
+        date_start = '2024-08-03'
+        response = self.client.get(reverse('all'), {'date_start':date_start})
+        self.assertQuerySetEqual(response.context['posts_list'], [])
+    def test_too_late_post(self):
+        post = Post.objects.create(title = 'Tst', blog_text = "123", pub_date = '2024-8-4')
+        date_finish = '2024-08-03'
+        response = self.client.get(reverse('all'), {'date_finish':date_finish})
+        self.assertQuerySetEqual(response.context['posts_list'], [])
+    def test_just_right_post(self):
+        post = Post.objects.create(title = 'Tst', blog_text = "123", pub_date = '2024-8-2')
+        date_start = '2024-08-01'
+        date_finish = '2024-08-03'
+        response = self.client.get(reverse('all'), {'date_finish':date_finish, 'date_start':date_start})
+        self.assertQuerySetEqual(response.context['posts_list'], [post])
+    def test_right_cat_right_date(self):
+        cat1 = Category.objects.create(name="Testcat1")
+        post = Post.objects.create(title = 'Tst', blog_text = "123", pub_date = '2024-8-2')
+        post2 = Post.objects.create(title = '2',blog_text = "23", pub_date = '2024-07-01')
+        post.categories.add(cat1)
+        date_start = '2024-08-01'
+        date_finish = '2024-08-03'
+        response = self.client.get(reverse('all'), {'date_finish':date_finish, 'date_start':date_start, 'categories': [str(cat1.pk),]})
+        self.assertQuerySetEqual(response.context['posts_list'], [post])
+    def test_right_cat_wrong_date(self):
+        cat1 = Category.objects.create(name="Testcat1")
+        post = Post.objects.create(title = 'Tst', blog_text = "123", pub_date = '2024-7-01')
+        post2 = Post.objects.create(title = '2',blog_text = "23", pub_date = '2024-07-01')
+        post.categories.add(cat1)
+        date_start = '2024-08-01'
+        date_finish = '2024-08-03'
+        response = self.client.get(reverse('all'), {'date_finish':date_finish, 'date_start':date_start, 'categories': [str(cat1.pk),]})
+        self.assertQuerySetEqual(response.context['posts_list'], [])
+    def test_wrong_cat_right_date(self):
+        cat1 = Category.objects.create(name="Testcat1")
+        cat2 = Category.objects.create(name="Testcat2")
+        post = Post.objects.create(title = 'Tst', blog_text = "123", pub_date = '2024-7-01')
+        post2 = Post.objects.create(title = '2',blog_text = "23", pub_date = '2024-07-01')
+        post.categories.add(cat1)
+        date_start = '2024-08-01'
+        date_finish = '2024-08-03'
+        response = self.client.get(reverse('all'), {'date_finish':date_finish, 'date_start':date_start, 'categories': [str(cat2.pk),]})
+        self.assertQuerySetEqual(response.context['posts_list'], [])
+
+    
+
     
 
 
