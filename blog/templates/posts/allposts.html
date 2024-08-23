@@ -32,7 +32,7 @@
           </div>
         </div>
         <div class="col-md-2 sticky-top">
-          <div class="sticky-top my-2">
+          <div class="sticky-top">
             <h3>Фильтры</h3>
           <form action="{% url 'all' %}" method="get">
             {% for category in Category %}
@@ -77,26 +77,18 @@
   <ul class="nav justify-content-center align-items-center pb-2 mb-2">
     {% if page_obj.has_previous %}
       <li class="nav-item">
-        <a href="?page=1{% if selected_categories %}&categories={{ selected_categories|join:'&categories=' }}{% endif %}
-        {% if date_start %}&date_start={{date_start}}{% endif %}
-        {% if date_finish %}&date_finish={{date_finish}}{% endif %}" class="nav-link px-2 text-body-secondary">first</a>
+        <a href="?page=1{% if selected_categories %}&categories={{ selected_categories|join:'&categories=' }}{% endif %}{% if date_start %}&date_start={{date_start}}{% endif %}{% if date_finish %}&date_finish={{date_finish}}{% endif %}" class="nav-link px-2 text-body-secondary">first</a>
       </li>
       <li class="nav-item">
-        <a href="?page={{ page_obj.previous_page_number }}{% if selected_categories %}&categories={{ selected_categories|join:'&categories=' }}{% endif %}
-        {% if date_start %}&date_start={{date_start}}{% endif %}
-        {% if date_finish %}&date_finish={{date_finish}}{% endif %}" class="nav-link px-2 text-body-secondary">previous</a>
+        <a href="?page={{ page_obj.previous_page_number }}{% if selected_categories %}&categories={{ selected_categories|join:'&categories=' }}{% endif %}{% if date_start %}&date_start={{date_start}}{% endif %}{% if date_finish %}&date_finish={{date_finish}}{% endif %}" class="nav-link px-2 text-body-secondary">previous</a>
       </li>
     {% endif %}
     {% if page_obj.has_next %}
       <li class="nav-item">
-        <a href="?page={{ page_obj.next_page_number }}{% if selected_categories %}&categories={{ selected_categories|join:'&categories=' }}{% endif %}
-        {% if date_start %}&date_start={{date_start}}{% endif %}
-        {% if date_finish %}&date_finish={{date_finish}}{% endif %}" class="nav-link px-2 text-body-secondary">next</a>
+        <a href="?page={{ page_obj.next_page_number }}{% if selected_categories %}&categories={{ selected_categories|join:'&categories=' }}{% endif %}{% if date_start %}&date_start={{date_start}}{% endif %}{% if date_finish %}&date_finish={{date_finish}}{% endif %}" class="nav-link px-2 text-body-secondary">next</a>
       </li>
       <li class="nav-item">
-        <a href="?page={{ page_obj.paginator.num_pages }}{% if selected_categories %}&categories={{ selected_categories|join:'&categories=' }}{% endif %}
-        {% if date_start %}&date_start={{date_start}}{% endif %}
-        {% if date_finish %}&date_finish={{date_finish}}{% endif %}" class="nav-link px-2 text-body-secondary">last</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}{% if selected_categories %}&categories={{ selected_categories|join:'&categories=' }}{% endif %}{% if date_start %}&date_start={{date_start}}{% endif %}{% if date_finish %}&date_finish={{date_finish}}{% endif %}" class="nav-link px-2 text-body-secondary">last</a>
       </li>
     {% endif %}
   </ul>

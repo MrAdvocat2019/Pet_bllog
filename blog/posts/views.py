@@ -31,9 +31,9 @@ def list_view(request:HttpRequest):
     date_finish = timezone.now()
     date_finish = f'{date_finish.year}-{date_finish.month}-{date_finish.day}'
     if request.GET.get('date_start'):
-        date_start = request.GET.get('date_start')
+        date_start = request.GET.get('date_start').strip()
     if request.GET.get('date_finish'):
-        date_finish = request.GET.get('date_finish')
+        date_finish = request.GET.get('date_finish').strip()
         
 
     date_start = datetime.datetime.strptime(date_start, '%Y-%m-%d')
@@ -43,8 +43,8 @@ def list_view(request:HttpRequest):
 
     posts_list = posts_list.filter(pub_date__gte=date_start).filter(pub_date__lte=date_finish)
     print(posts_list)
-    date_start = f'{date_start.year}-{str(date_start.month).zfill(2)}-{str(date_start.day).zfill(2)}'
-    date_finish = f'{date_finish.year}-{str(date_finish.month).zfill(2)}-{str(date_finish.day).zfill(2)}'
+    date_start = f'{date_start.year}-{str(date_start.month).zfill(2)}-{str(date_start.day).zfill(2)}'.strip()
+    date_finish = f'{date_finish.year}-{str(date_finish.month).zfill(2)}-{str(date_finish.day).zfill(2)}'.strip()
 
     #paginating
     paginator = Paginator(posts_list, 6) 
