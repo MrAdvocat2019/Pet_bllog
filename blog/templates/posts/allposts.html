@@ -4,51 +4,91 @@
 {% block styles %}
 {% endblock styles %}
 {% block content %}
-{% if posts_list %}
+
 <div class="album py-5 bg-body-tertiary">
-<div class="container">
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-3">
-        {%for i in posts_list%}
-        <div class="col">
-            <div class="card shadow-sm">
-                 {% thumbnail i.thumbnail "600x400" crop="center" as im %}
-                <img src="{{ im.url }}" alt="{{ i.title }}" class="card-img-top" style="width: 100%; height: auto;">
-                {% endthumbnail %}
-                
-              <div class="card-body">
-                <h3>{{i.title}}</h3>
-                <p class="card-text">{{i.get_short_info}}</p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <form action="{%url 'detail' i.id%}">
-                    <button type="submit" class="btn btn-outline-dark me-2">Просмотреть</button>
-                  </form>
+  <div class="container">
+    {% if posts_list %}
+      <div class="row">
+        <div class="col-md-10"> <!-- Adjust the column width as needed -->
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-3">
+            {% for i in page_obj %}
+              <div class="col">
+                <div class="card shadow-sm">
+                  {% thumbnail i.thumbnail "600x400" crop="center" as im %}
+                    <img src="{{ im.url }}" alt="{{ i.title }}" class="card-img-top" style="width: 100%; height: auto;">
+                  {% endthumbnail %}
+                  <div class="card-body">
+                    <h3>{{ i.title }}</h3>
+                    <p class="card-text">{{ i.get_short_info }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <form action="{% url 'detail' i.id %}">
+                        <button type="submit" class="btn btn-outline-dark me-2">Просмотреть</button>
+                      </form>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
+            {% endfor %}
+          </div>
         </div>
-        {% endfor %} 
+        <div class="col-md-2">
+          <h3>Фильтры</h3>
+          <form action="{% url 'all' %}" method="get">
+            {% for category in Category %}
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="categories" id="category{{ category.pk }}" value="{{ category.pk }}" {% if category.pk|stringformat:"s" in selected_categories %}checked{% endif %}>
+                <label class="form-check-label" for="category{{ category.pk }}">{{ category.name }}</label> 
+              </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-success my-2">Применить</button>
+          </form> 
+          <form action="{% url 'all' %}" method="get">
+            <button type="submit" class="btn btn-secondary">Сбросить</button>
+          </form>
+        </div>
+      </div>
+  </div>
+</div>
+
+
+
+
+  {%else%}
+  <div class="container">
+    <div class="row">
+      <div class="col-10">
+        <h2>Постов удовлетворяющих фильтрам не найдено, сбросьте фильтры и попробуйте снова</h2>
+      </div>
+      <div class="col-2">
+        <form action="{% url 'all' %}" method="get">
+          <button type="submit" class="btn btn-secondary">Сбросить фильтры</button>
+        </form>
+      </div>
     </div>
-</div>
-</div>
+  </div>
+  {% endif %}
 
-{%else%}
-<p>No posts available</p>
-{% endif %}
-<div class="pagination">
-  <span class="step-links">
-      {% if page_obj.has_previous %}
-          <a href="?page=1">&laquo; first</a>
-          <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-      {% endif %}
+<footer class="py-1 my-2">
+  <ul class="nav justify-content-center align-items-center pb-2 mb-2">
+    {% if page_obj.has_previous %}
+      <li class="nav-item">
+        <a href="?page=1{% if selected_categories %}&categories={{ selected_categories|join:'&categories=' }}{% endif %}" class="nav-link px-2 text-body-secondary">first</a>
+      </li>
+      <li class="nav-item">
+        <a href="?page={{ page_obj.previous_page_number }}{% if selected_categories %}&categories={{ selected_categories|join:'&categories=' }}{% endif %}" class="nav-link px-2 text-body-secondary">previous</a>
+      </li>
+    {% endif %}
+    {% if page_obj.has_next %}
+      <li class="nav-item">
+        <a href="?page={{ page_obj.next_page_number }}{% if selected_categories %}&categories={{ selected_categories|join:'&categories=' }}{% endif %}" class="nav-link px-2 text-body-secondary">next</a>
+      </li>
+      <li class="nav-item">
+        <a href="?page={{ page_obj.paginator.num_pages }}{% if selected_categories %}&categories={{ selected_categories|join:'&categories=' }}{% endif %}" class="nav-link px-2 text-body-secondary">last</a>
+      </li>
+    {% endif %}
+  </ul>
+  <p class="text-center text-body-secondary">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</p>
+</footer>
 
-      <span class="current">
-          Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-      </span>
 
-      {% if page_obj.has_next %}
-          <a href="?page={{ page_obj.next_page_number }}">next</a>
-          <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
-      {% endif %}
-  </span>
-</div>
 {% endblock%}
