@@ -34,14 +34,6 @@ class Post(models.Model):
             return dict[self.pub_date.month]
         except:
             return "Wrong month"
-    def save(self, *args, **kwargs):
-        is_created = self.pk is None
-
-        super(Post, self).save(*args, **kwargs)
-
-        if is_created:
-            from .tasks import send_notification_1  # Import here to avoid circular import
-            send_notification_1.delay()
     def __str__(self):
         return self.title
 

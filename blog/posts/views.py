@@ -41,8 +41,7 @@ def list_view(request:HttpRequest):
     date_finish = datetime.datetime.strptime(date_finish, '%Y-%m-%d')
     date_finish = datetime.datetime(date_finish.year, date_finish.month, date_finish.day, 23,59,59)
 
-    posts_list = posts_list.filter(pub_date__gte=date_start).filter(pub_date__lte=date_finish)
-    print(posts_list)
+    posts_list = posts_list.filter(pub_date__gte=date_start).filter(pub_date__lte=date_finish).order_by('-pub_date')
     date_start = f'{date_start.year}-{str(date_start.month).zfill(2)}-{str(date_start.day).zfill(2)}'.strip()
     date_finish = f'{date_finish.year}-{str(date_finish.month).zfill(2)}-{str(date_finish.day).zfill(2)}'.strip()
 
