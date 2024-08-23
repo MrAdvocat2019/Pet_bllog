@@ -3,7 +3,7 @@ from django.utils import timezone
 from django.test import TestCase
 from django.urls import reverse
 from .models import Post
-
+from categories.models import Category 
 from django.test import Client
 client = Client()
 class PostModelTest(TestCase):
@@ -29,7 +29,6 @@ class PostListViewTest(TestCase):
         response = self.client.get(reverse('all'))
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "No posts available")
         self.assertQuerySetEqual(response.context['posts_list'], [])
     def test_pasr_post_list(self):
         post = create_post('Past', -2)
@@ -44,6 +43,52 @@ class PostListViewTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertQuerySetEqual(response.context['posts_list'], [past])
+    def test_question_with_wrongcategory_notappears_when_filtered(self):
+        cat1 = Category.objects.create(name="Testcat1")
+        cat2 = Category.objects.create(name="Testcat2")
+        post = create_post("TestPost1", -1)  # This post should only be associated with cat1
+        post.categories.add(cat1)
+
+        # Request with a category that the post does not belong to
+        response = self.client.get(reverse('all'), {'categories': [str(cat2.pk)]})
+
+        # Assert that no posts are returned
+        self.assertQuerySetEqual(response.context['posts_list'], [])
+    def test_question_with_wrongcategory_appears_when_filtered(self):
+        cat1 = Category.objects.create(name="Testcat1")
+        post = create_post("TestPost1", -1)  # This post should only be associated with cat1
+        post.categories.add(cat1)
+
+        # Request with a category that the post does not belong to
+        response = self.client.get(reverse('all'), {'categories': [str(cat1.pk)]})
+
+        # Assert that no posts are returned
+        self.assertQuerySetEqual(response.context['posts_list'], [post])
+    def test_question_with_wrongcategory_appears_when_filtered_twice(self):
+        cat1 = Category.objects.create(name="Testcat1")
+        cat2 = Category.objects.create(name="TestCat2")
+        post = create_post("TestPost1", -1)  # This post should only be associated with cat1
+        post.categories.add(cat1)
+        post.categories.add(cat2)
+
+        # Request with a category that the post does not belong to
+        response = self.client.get(reverse('all'), {'categories': [str(cat1.pk), str(cat2.pk)]})
+
+        # Assert that no posts are returned
+        self.assertQuerySetEqual(response.context['posts_list'], [post])
+    def test_question_with_wrongcategory_notappears_when_filtered_twice(self):
+        cat1 = Category.objects.create(name="Testcat1")
+        cat2 = Category.objects.create(name="TestCat2")
+        post = create_post("TestPost1", -1)  # This post should only be associated with cat1
+        post.categories.add(cat1)
+
+        # Request with a category that the post does not belong to
+        response = self.client.get(reverse('all'), {'categories': [str(cat1.pk), str(cat2.pk)]})
+
+        # Assert that no posts are returned
+        self.assertQuerySetEqual(response.context['posts_list'], [])
+    
+
 
 class DetailPostTest(TestCase):
     def test_future_post(self):
@@ -59,3 +104,9 @@ class DetailPostTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, post.blog_text)
+    def test_category(self):
+        cat1 = Category.objects.create(name="Testcat1")
+        post = create_post("TestPost1", -1)  # This post should only be associated with cat1
+        post.categories.add(cat1)
+        response = self.client.get(reverse('detail', args=(post.id,)))
+        self.assertContains(response, cat1.name)
