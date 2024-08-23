@@ -37,9 +37,11 @@ def list_view(request:HttpRequest):
         
 
     date_start = datetime.datetime.strptime(date_start, '%Y-%m-%d')
-
     date_finish = datetime.datetime.strptime(date_finish, '%Y-%m-%d')
     date_finish = datetime.datetime(date_finish.year, date_finish.month, date_finish.day, 23,59,59)
+
+    date_start = timezone.make_aware(date_start, timezone.get_current_timezone())
+    date_finish = timezone.make_aware(date_finish, timezone.get_current_timezone())
 
     posts_list = posts_list.filter(pub_date__gte=date_start).filter(pub_date__lte=date_finish).order_by('-pub_date')
     date_start = f'{date_start.year}-{str(date_start.month).zfill(2)}-{str(date_start.day).zfill(2)}'.strip()
