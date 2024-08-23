@@ -4,3 +4,5 @@
 *.__pycache__
 *.log
 /.idea/
+/blog/media/cache
+/blog/static
