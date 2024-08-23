@@ -46,7 +46,7 @@ def list_view(request:HttpRequest):
     date_finish = f'{date_finish.year}-{str(date_finish.month).zfill(2)}-{str(date_finish.day).zfill(2)}'.strip()
 
     #paginating
-    paginator = Paginator(posts_list, 6) 
+    paginator = Paginator(posts_list, 2) 
 
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
