@@ -12,7 +12,7 @@ install requirements.txt with pip install -r requirements.txt
    ```
 4. In separate terminal run `python manage.py run_bot`
 
-5. In separate terminal without active venv run `redis-server`
+5. In separate terminal without active venv run `redis-server`(install it first, you can use brew install redis if you on mac)
 6. In third terminal with activated venv run `celery -A blog worker -l info`
 
 You launched the project! But don't use this for production, this server is not suitable for that!!!!
