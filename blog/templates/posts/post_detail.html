@@ -1,40 +1,44 @@
-{% extends 'base.html' %}
-{% block content %}
-{%load thumbnail%}
+{% extends 'base.html' %} {% block content %} {%load thumbnail%}
 <div class="container h-100 d-flex justify-content-center">
-<div class="container">
-        <div class="col-auto d-flex justify-content-center">
-            <!-- Post content -->
-            <article>
-                <!-- Post header -->
-                <header class="mb-4 text-center">
-                    <!-- Post title -->
-                    <h1 class="fw-bolder mb-1">{{post.title}}</h1>
-                    <!-- Post meta content -->
-                    <div class="text-muted fst-italic mb-2">Создано {{post.pub_date.day}} {{post.get_verbose_month}}, {{post.pub_date.year}}</div>
-                    <!-- Post categories -->
-                     {% for category in post.categories.all%}
-                        <a href="{% url 'all' %}?categories={{ category.pk }}" class="badge bg-secondary text-decoration-none">
-                            {{ category.name }}
-                        </a>
-                     {% endfor %}
-                    
-                </header>
-                <!-- Preview image figure -->
-                <figure class="mb-4 text-center">
-                    {% thumbnail post.thumbnail "900x600" crop="center" as im %}
-                    <img class="img-fluid rounded" src={{im.url}} alt={{post.title}} />
-                    {% endthumbnail %}
-                </figure>
-                <!-- Post content -->
-                <section class="mb-5">
-                    <div class="fs-5 mb-4">
-                        {{post.blog_text|linebreaks}}
-                    </div>
-                    
-                </section>
-            </article>
-        </div>
-</div>
+  <div class="container">
+    <div class="col-auto d-flex justify-content-center">
+      <!-- Post content -->
+      <article>
+        <!-- Post header -->
+        <header class="mb-4 text-center">
+          <!-- Post title -->
+          <h1 class="fw-bolder mb-1">{{post.title}}</h1>
+          <!-- Post meta content -->
+          <div class="text-muted fst-italic mb-2">
+            Создано {{post.pub_date.day}} {{post.get_verbose_month}},
+            {{post.pub_date.year}}
+          </div>
+          <!-- Post categories -->
+          {% for category in post.categories.all%}
+          <a
+            href="{% url 'all' %}?categories={{ category.pk }}"
+            class="badge bg-secondary text-decoration-none"
+          >
+            {{ category.name }}
+          </a>
+          {% endfor %}
+        </header>
+        <!-- Preview image figure -->
+        <figure class="mb-4 text-center">
+          {% thumbnail post.thumbnail "900x600" crop="center" as im %}
+          <img
+            class="img-fluid rounded"
+            src="{{im.url}}"
+            alt="{{post.title}}"
+          />
+          {% endthumbnail %}
+        </figure>
+        <!-- Post content -->
+        <section class="mb-5">
+          <div class="fs-5 mb-4">{{post.blog_text|linebreaks}}</div>
+        </section>
+      </article>
+    </div>
+  </div>
 </div>
 {% endblock content %}

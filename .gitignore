@@ -6,3 +6,4 @@
 /.idea/
 /blog/media/cache
 /blog/static
+.env
