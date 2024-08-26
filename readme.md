@@ -1,44 +1,20 @@
 A pet blog project on django with celery
 
-For launch run: `cd blog` then
 
-1. Create postgres database called blog, username и password you can change in settings.py
+0. in .env.template put your telegram api key and a link on your bot(full link with https and etc) and then execute `cp .env.template .env` then `cd blog`
+1. Create postgres database called blog, username и password you can see and change in settings.py
 2. Create and activate venv
-3. In terminal execute server will be running on localhost 8080
+3. In terminal execute server will be running on localhost 8000
    ```
    python manage.py makemigrations
    python manage.py migrate
    python manage.py runserver
    ```
-4. In separate terminal without active venv run `redis-server`
-5. In third terminal with activated venv run `celery -A blog worker -l info`
+4. In separate terminal run `python manage.py run_bot`
+
+5. In separate terminal without active venv run `redis-server`
+6. In third terminal with activated venv run `celery -A blog worker -l info`
 
 You launched the project! But don't use this for production, this server is not suitable for that!!!!
 
-Alternitavely you can change
-
-```PYTHON
-CELERY_BROKER_URL = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
-```
-
-to
-
-```PYTHON
-CELERY_BROKER_URL = 'redis://redis:6379'
-CELERY_RESULT_BACKEND = 'redis://redis:6379'
-```
-
-and
-
-```
-'HOST': 'localhost',
-```
-
-in settings.DATABASE to
-
-```
-'HOST': 'pgdb',
-```
-
-and run `docker-compose up` from the root directory(not the blog)
+Alternitavely you can use docker but dont even try
