@@ -1,6 +1,6 @@
 A pet blog project on django with celery
 
-
+install requirements.txt with pip install -r requirements.txt
 0. in .env.template put your telegram api key and a link on your bot(full link with https and etc) and then execute `cp .env.template .env` then `cd blog`
 1. Create postgres database called blog, username и password you can see and change in settings.py
 2. Create and activate venv
