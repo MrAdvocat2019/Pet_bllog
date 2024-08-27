@@ -41,15 +41,13 @@ class Post(models.Model):
         except:
             return "Wrong month"
     def save(self, *args, **kwargs):
-        # you can check if object just created by comparing "pk" attr to None
-        # you can also use _state attr see doc link below
         is_created = self.pk is None
-
         super(Post, self).save(*args, **kwargs)
 
         if is_created:
-            # do something here
+            # Convert the categories to a list of IDs
             messaging.delay(self.title, self.pk)
+
     
     def __str__(self):
         return self.title
