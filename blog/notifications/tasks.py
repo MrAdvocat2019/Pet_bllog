@@ -15,7 +15,6 @@ def messaging(title, pk):
     categories = post.categories.all()
     text = f"""Вышел новый пост с названием {title} посмотрите его по ссылке http://127.0.0.1:8000/posts/{pk}/
 """
-    time.sleep(1)
     for sub in sub_list:
         chat_id = sub.chat_id
         s = categories.intersection(sub.categories.all())

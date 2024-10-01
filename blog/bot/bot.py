@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from .check import check_if_string_correct
 from notifications.models import Subscriber
 from categories.models import Category
+
 # Load environment variables
 load_dotenv()
 
@@ -14,13 +15,15 @@ if not TELEKEY:
 
 bot = telebot.TeleBot(TELEKEY)
 
-@bot.message_handler(commands=['start',])
+
+@bot.message_handler(commands=['start', ])
 def send_welcome(message):
     bot.reply_to(message, """
     Добро пожаловать в бота моего блога, наберите /help для списка команд
     """)
 
-@bot.message_handler(commands=['help',])
+
+@bot.message_handler(commands=['help', ])
 def send_help(message):
     text = '''
     /subscribe - подписаться на рассылку
@@ -30,8 +33,8 @@ def send_help(message):
     bot.send_message(message.chat.id, f"Вот список команд: {text}")
 
 
-#subscription handlers
-@bot.message_handler(commands=['subscribe',])
+# subscription handlers
+@bot.message_handler(commands=['subscribe', ])
 def subscribe(message):
     exists = Subscriber.objects.filter(chat_id=message.chat.id).exists()
     if exists:
@@ -48,6 +51,7 @@ def subscribe(message):
             counter += 1
         bot.reply_to(message, text)
         bot.register_next_step_handler(message, register_categories)
+
 
 def register_categories(message):
     msg_text = message.text
@@ -70,9 +74,6 @@ def register_categories(message):
         bot.reply_to(message, 'Спасибо за подписку')
 
 
-
-
-
 @bot.message_handler(commands=['unsubscribe', ])
 def unsubscribe(message):
     subscriber = Subscriber.objects.filter(chat_id=message.chat.id)
@@ -81,6 +82,7 @@ def unsubscribe(message):
         subscriber.delete()
     else:
         bot.send_message(message.chat.id, "Вы не подписаны")
+
 
 @bot.message_handler(commands=['cats', ])
 def change_cats(message):
@@ -99,6 +101,8 @@ def change_cats(message):
             counter += 1
         bot.reply_to(message, text)
         bot.register_next_step_handler(message, register_categories_cats)
+
+
 def register_categories_cats(message):
     msg_text = message.text
     username = message.from_user.username
@@ -121,10 +125,25 @@ def register_categories_cats(message):
         bot.reply_to(message, 'Категории изменены')
 
 
+@bot.message_handler(commands=['allcats', ])
+def all_categories(message):
+    subscriber = Subscriber.objects.filter(chat_id=message.chat.id)
+    if not subscriber.exists():
+        bot.reply_to(message, 'Сначала подпишитесь через /subscribe')
+    else:
+        subscriber = subscriber.first()
+        categories = subscriber.categories.all()
+        text = "Ваши категории:\n "
+        counter = 1
+        for i in categories:
+            text += f"{counter}. {i.name}\n"
+            counter += 1
+        bot.reply_to(message, text)
+
+
 @bot.message_handler(func=lambda message: True)
 def echo_message(message):
-    bot.reply_to(message, message.text)
+    bot.reply_to(message, "Что?")
 
 def start_bot():
     bot.infinity_polling()
-
